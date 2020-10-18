@@ -14,19 +14,19 @@ from src.settings.settings import SERVER_HOST, SERVER_PORT
 router_cm: APIRouter = APIRouter()
 
 
-async def get_fabric(backend: Optional[str] = Query(default="default", description="backend парсера")) -> BaseFabric:
+async def get_fabric(backend: Optional[str] = Query(default='default', description='backend парсера')) -> BaseFabric:
     fabric: BaseFabric = await create_fabric(backend=backend)
     return fabric
 
 
 @router_cm.get(
-    path="/get_og",
+    path='/get_og',
     response_model=OpenGraph,
-    description="Получение OG",
-    name="Получение OG"
+    description='Получение OG',
+    name='Получение OG'
 )
 async def get_og(
-    url: AnyHttpUrl = Query(default=..., description="Url сайта"),
+    url: AnyHttpUrl = Query(default=..., description='Url сайта'),
     fabric: BaseFabric = Depends(get_fabric, use_cache=True)
 ):
 
@@ -41,22 +41,22 @@ async def get_og(
     # site_content: Optional[str] = await fabric.parser.get_context_url(url=str(url))
 
 
-    raise HTTPException(status_code=422, detail="В разработке")
+    raise HTTPException(status_code=422, detail='В разработке')
 
 
 def get_application() -> FastAPI:
     application: FastAPI = FastAPI(
-        title="Open-Graph-Parser",
+        title='Open-Graph-Parser',
         debug=True,
-        version="1.0.0"
+        version='1.0.0'
     )
 
 
 
     application.include_router(
         router=router_cm,
-        prefix="/api/v1",
-        tags=["Open Graph"],
+        prefix='/api/v1',
+        tags=['Open Graph'],
     )
 
     return application

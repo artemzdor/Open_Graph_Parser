@@ -8,7 +8,7 @@ from aioredis import Redis
 class RedisApi:
     redis: Optional[Redis]
     FIRST_TTL_SEC: int = 7 * 60
-    PREFIX: str = "ids:"
+    PREFIX: str = 'ids:'
 
     def __init__(self):
         self.redis = None
@@ -43,15 +43,15 @@ class RedisApi:
 
     @classmethod
     def create_composite_key(cls, keys: List[str]) -> str:
-        return cls.PREFIX + ":".join(keys)
+        return cls.PREFIX + ':'.join(keys)
 
     @classmethod
     def key_map(cls, key: str) -> str:
-        return f"{cls.PREFIX}{key}"
+        return f'{cls.PREFIX}{key}'
 
     @classmethod
     def get_split_key_composite(cls, composite_key: str) -> List[str]:
-        return [cls.key_map(key=i) for n, i in enumerate(composite_key.split(":")) if n != 0]
+        return [cls.key_map(key=i) for n, i in enumerate(composite_key.split(':')) if n != 0]
 
     async def set_split_keys(self, composite_key: str, ttl: int) -> None:
         for key in self.get_split_key_composite(composite_key=composite_key):
@@ -61,13 +61,13 @@ class RedisApi:
         if key:
             composite_key: Optional[bytes] = await self.redis.get(key=self.key_map(key=key))
             if composite_key:
-                return composite_key.decode("utf-8")
+                return composite_key.decode('utf-8')
             return composite_key
         if keys:
             for key in keys:
                 composite_key: Optional[bytes] = await self.redis.get(key=self.key_map(key=key))
                 if composite_key:
-                    return composite_key.decode("utf-8")
+                    return composite_key.decode('utf-8')
                 return composite_key
 
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     async def main():
         redis: RedisApi = await RedisApi().setup()
-        keys: List[str] = ["2", "3", "4"]
+        keys: List[str] = ['2', '3', '4']
         composite_key: str = redis.create_composite_key(keys=keys)
 
         await redis.set_split_keys(
@@ -84,11 +84,11 @@ if __name__ == '__main__':
         )
 
         print(composite_key)
-        ck_1: Optional[str] = await redis.get_composite_key(key="1")
-        ck_2: Optional[str] = await redis.get_composite_key(key="2")
+        ck_1: Optional[str] = await redis.get_composite_key(key='1')
+        ck_2: Optional[str] = await redis.get_composite_key(key='2')
 
         assert ck_1 == None
-        assert ck_2 == redis.PREFIX + "2:3:4"
+        assert ck_2 == redis.PREFIX + '2:3:4'
         print(ck_2)
 
 
