@@ -21,7 +21,7 @@ class DefaultParser(BaseParser):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-    def get_list_tag_og(self, content_site: str) -> List[TagOR]:
+    def get_list_tags(self, content_site: str) -> List[TagOR]:
         soup: Optional[BeautifulSoup] = None
         result: List[TagOR] = list()
         try:
