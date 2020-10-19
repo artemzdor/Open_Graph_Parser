@@ -1,8 +1,8 @@
-from typing import Optional, List
+from typing import Optional, List, Callable
 
 import uvicorn
 from pydantic import AnyHttpUrl
-from fastapi import FastAPI, APIRouter, Query, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, Query, Depends
 
 from src.apps.fabric.base import BaseFabric
 from src.apps.models.parsers.tags import TagOR
@@ -29,19 +29,17 @@ async def get_og(
     url: AnyHttpUrl = Query(default=..., description='Url сайта'),
     fabric: BaseFabric = Depends(get_fabric, use_cache=True)
 ):
-
     content_site: str = await fabric.parser.get_context_url(url=str(url))
-    tag_of: List[TagOR] = fabric.parser.get_list_tag_og(content_site=content_site)
-    print()
+    tags: List[TagOR] = fabric.parser.get_list_tags(content_site=content_site)
+    open_graph: OpenGraph = OpenGraph()
 
+    for tag in tags:
+        fun: Optional[Callable[[TagOR, OpenGraph], bool]] = fabric.parser.map_node_og.get(tag.property_name)
+        if fun is None:
+            continue
+        fun(tag, open_graph)
 
-
-    # fabric: BaseFabric = get_fabric(backend=backend)
-    #
-    # site_content: Optional[str] = await fabric.parser.get_context_url(url=str(url))
-
-
-    raise HTTPException(status_code=422, detail='В разработке')
+    return open_graph
 
 
 def get_application() -> FastAPI:
@@ -50,8 +48,6 @@ def get_application() -> FastAPI:
         debug=True,
         version='1.0.0'
     )
-
-
 
     application.include_router(
         router=router_cm,
