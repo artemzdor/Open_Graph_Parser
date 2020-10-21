@@ -7,12 +7,10 @@ class BaseFabric(ABC):
     _parser: BaseParser
 
     @abstractmethod
-    def setup(self, backend: str) -> 'BaseFabric':
+    async def setup(self, backend: str) -> 'BaseFabric':
         pass
 
     @property
     @abstractmethod
     def parser(self) -> BaseParser:
         pass
-
-

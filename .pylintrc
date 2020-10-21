@@ -1,0 +1,9 @@
+[FORMAT]
+max-line-length=120
+
+[MASTER]
+disable=C0114,E0401,C0116,C0115,R0903,W0614,W0613,
+
+[TYPECHECK]
+ignored-classes=DefaultParser
+

@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List, Dict, Callable
-from .parser_methods import *
 
-from src.apps.models.open_graph import OpenGraph
+
 from src.apps.models.parsers.tags import TagOR
+from src.apps.models.open_graph import OpenGraph
+from src.apps.fabric.parser.parser_methods import *
 
 
 class BaseParser(ABC):
@@ -66,9 +67,6 @@ class BaseParser(ABC):
         'profile:gender': profile_gender,
     }
 
-    async def setup(self, backend: str) -> 'BaseParser':
-        return self
-
     @abstractmethod
     async def get_context_url(self, url: str) -> str:
         pass
@@ -76,4 +74,3 @@ class BaseParser(ABC):
     @abstractmethod
     def get_list_tags(self, content_site: str) -> Optional[List[TagOR]]:
         pass
-

@@ -2,20 +2,7 @@ from enum import Enum
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, validator
-
-INT_MAX_VALUE: int = 2 ** 31 - 1
-INT_MIN_VALUE: int = - (2 ** 31)
-
-
-def check_int_32(v: int) -> bool:
-    ''' validator to int 32 '''
-    if v is None:
-        return True
-    elif 1 <= v <= INT_MAX_VALUE:
-        return True
-    else:
-        raise ValueError(f'1 <= ({v}) <= {INT_MAX_VALUE}')
+from pydantic import BaseModel, Field
 
 
 class EnumTypeOG(str, Enum):
@@ -23,6 +10,14 @@ class EnumTypeOG(str, Enum):
     book: str = 'book'
     profile: str = 'profile'
     website: str = 'website'
+    music_song: str = 'music.song'
+    music_album: str = 'music.album'
+    music_playlist: str = 'music.playlist'
+    music_radio_station: str = 'music.radio_station'
+    video_movie: str = 'video.movie'
+    video_episode: str = 'video.episode'
+    video_tv_show: str = 'video.tv_show'
+    video_other: str = 'video.other'
 
 
 class EnumGender(str, Enum):
@@ -74,10 +69,6 @@ class MusicSong(BaseModel):
     album_track: Optional[int] = Field(default=None, description='Номер трека в альбоме')
     musician: List[Profile] = Field(default_factory=list, description='Исполнитель песни')
 
-    @validator('duration', 'album_disc', 'album_track')
-    def check_int(cls, v: int, **kwargs) -> bool:
-        return check_int_32(v=v)
-
 
 class MusicAlbum(BaseModel):
     song: Optional['MusicSong'] = Field(default=None, description='Название песни в альбоме')
@@ -86,9 +77,6 @@ class MusicAlbum(BaseModel):
     musician: Optional[Profile] = Field(default=None, description='Профайл музыканта, который создал эту песню')
     release_date: Optional[datetime] = Field(default=None, description='Датa выпуска альбома')
 
-    @validator('song_disc', 'song_track')
-    def check_int(cls, v: int, **kwargs) -> bool:
-        return check_int_32(v=v)
 
 
 class MusicPlayList(BaseModel):
@@ -96,10 +84,6 @@ class MusicPlayList(BaseModel):
     album_disc: Optional[int] = Field(default=None, description='Номер альбома на диске')
     album_track: Optional[int] = Field(default=None, description='Номер трека в альбоме')
     creator: Optional[Profile] = Field(default=None, description='Создатель плейлиста')
-
-    @validator('album_disc', 'album_track')
-    def check_int(cls, v: int, **kwargs) -> bool:
-        return check_int_32(v=v)
 
 
 class MusicRadioStation(BaseModel):
@@ -117,9 +101,6 @@ class VideoMovie(BaseModel):
     release_date: Optional[datetime] = Field(default=None, description='Дата выхода фильма в прокат')
     tag: List[str] = Field(default_factory=list, description='Теги, связанные с этим фильмом')
 
-    @validator('duration')
-    def check_int(cls, v: int, **kwargs) -> bool:
-        return check_int_32(v=v)
 
 
 class VideoTvShow(VideoMovie):
@@ -172,15 +153,15 @@ class OpenGraph(BaseModel):
     locale_alternate: List[str] = Field(default_factory=list, description='')
     site_name: Optional[str] = Field(default=None, description='')
 
-    music_song: List[MusicSong] = Field(default_factory=list, description='')
-    music_album: List[MusicAlbum] = Field(default_factory=list, description='')
-    music_play_list: List[MusicPlayList] = Field(default_factory=list, description='')
-    music_radio_station: List[MusicRadioStation] = Field(default_factory=list, description='')
+    music_song: MusicSong = Field(default_factory=MusicSong, description='')
+    music_album: MusicAlbum = Field(default_factory=MusicAlbum, description='')
+    music_play_list: MusicPlayList = Field(default_factory=MusicPlayList, description='')
+    music_radio_station: MusicRadioStation = Field(default_factory=MusicRadioStation, description='')
 
-    video_movie: List[VideoMovie] = Field(default_factory=list, description='')
-    video_tv_show: List[VideoTvShow] = Field(default_factory=list, description='')
-    video_episode: List[VideoEpisode] = Field(default_factory=list, description='')
-    video_other: List[VideoOther] = Field(default_factory=list, description='')
+    video_movie: VideoMovie = Field(default_factory=VideoMovie, description='')
+    video_tv_show: VideoTvShow = Field(default_factory=VideoTvShow, description='')
+    video_episode: VideoEpisode = Field(default_factory=VideoEpisode, description='')
+    video_other: VideoOther = Field(default_factory=VideoOther, description='')
 
     profile: Profile = Field(default_factory=Profile, description='')
     article: Article = Field(default_factory=Article, description='')
@@ -192,4 +173,3 @@ MusicSong.update_forward_refs()
 
 if __name__ == '__main__':
     pass
-

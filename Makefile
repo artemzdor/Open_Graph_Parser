@@ -1,6 +1,6 @@
 CURRENT_DIRECTORY := $(shell pwd)
 
-SERVICE = campaing_integraion_server
+SERVICE = server
 TEST_SERVICE = server_test
 TEST_SERVER_SERVICE = test_server
 

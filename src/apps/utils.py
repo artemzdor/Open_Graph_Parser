@@ -8,4 +8,3 @@ async def get():
             print(resp.status)
 
             print(await resp.text())
-

@@ -10,11 +10,11 @@ from src.apps.models.open_graph import OpenGraph
 from src.apps.fabric.creator import create_fabric
 from src.settings.settings import SERVER_HOST, SERVER_PORT
 
-
 router_cm: APIRouter = APIRouter()
 
 
 async def get_fabric(backend: Optional[str] = Query(default='default', description='backend парсера')) -> BaseFabric:
+    """ Fabric object """
     fabric: BaseFabric = await create_fabric(backend=backend)
     return fabric
 
@@ -26,8 +26,8 @@ async def get_fabric(backend: Optional[str] = Query(default='default', descripti
     name='Получение OG'
 )
 async def get_og(
-    url: AnyHttpUrl = Query(default=..., description='Url сайта'),
-    fabric: BaseFabric = Depends(get_fabric, use_cache=True)
+        url: AnyHttpUrl = Query(default=..., description='Url сайта'),
+        fabric: BaseFabric = Depends(get_fabric, use_cache=True)
 ):
     content_site: str = await fabric.parser.get_context_url(url=str(url))
     tags: List[TagOR] = fabric.parser.get_list_tags(content_site=content_site)

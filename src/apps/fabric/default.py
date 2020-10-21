@@ -13,4 +13,3 @@ class FabricDefault(BaseFabric):
     @property
     def parser(self) -> BaseParser:
         return self._parser
-

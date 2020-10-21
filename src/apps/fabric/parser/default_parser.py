@@ -16,18 +16,17 @@ class DefaultParser(BaseParser):
                     if resp.content.total_bytes < 1024 * 1024:
                         markup: str = await resp.text(encoding='utf-8')
                         return markup
-                    else:
-                        raise HTTPException(status_code=500, detail='')
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+                    raise HTTPException(status_code=500, detail='')
+        except Exception as error:
+            raise HTTPException(status_code=500, detail=str(error))
 
     def get_list_tags(self, content_site: str) -> List[TagOR]:
         soup: Optional[BeautifulSoup] = None
         result: List[TagOR] = list()
         try:
             soup = BeautifulSoup(content_site, 'lxml')
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f'{e}')
+        except Exception as error:
+            raise HTTPException(status_code=500, detail=f'{error}')
 
         result_set: ResultSet = soup.select('html head meta')
 
