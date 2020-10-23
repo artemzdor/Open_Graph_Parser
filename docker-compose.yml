@@ -7,38 +7,12 @@ services:
       context: .
     command: "python /app/src/server.py"
     restart: "no"
-#    depends_on:
-#      - redis
     volumes:
       - .:/app
     environment:
       - PYTHONPATH=/app
     ports:
       - "8080:8080"
-
-#  server_test:
-#    build:
-#      dockerfile: Dockerfile
-#      context: .
-#    depends_on:
-#      - test_redis
-#    volumes:
-#      - .:/app
-#    environment:
-#      - PYTHONPATH=/app/
-#      - REDIS_HOST=test_redis
-#
-#
-#  redis:
-#    image: redis:6.0.6-alpine
-#    command: redis-server --maxmemory 256Mb
-#    restart: "no"
-#
-#  test_redis:
-#    image: redis:6.0.6-alpine
-#    command: redis-server --maxmemory 256Mb
-#    restart: "no"
-
 
 volumes:
   data:
