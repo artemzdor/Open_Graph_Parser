@@ -18,6 +18,10 @@ RUN apk add --update --no-cache --virtual .build-deps \
         g++ \
         python3-dev \
         make \
+        libc-dev \
+        libxslt-dev \
+        libxml2-dev \
+        libffi-dev \
     && rm -rf /var/cache/apk/* \
     && pip install --no-cache-dir --upgrade pip==20.2.2 pip-tools==5.3.1 \
     && pip-sync requirements.txt \

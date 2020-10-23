@@ -37,6 +37,7 @@ class Profile(BaseModel):
     last_name: Optional[str] = Field(default=None, description='Фамилия пользователя профайла')
     username: Optional[str] = Field(default=None, description='Ник')
     gender: Optional[EnumGender] = Field(default=None, description='Пол (мужской, женский) = male/female')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class Article(BaseModel):
@@ -46,6 +47,7 @@ class Article(BaseModel):
     author: List[Profile] = Field(default_factory=list, description='Авторы статьи')
     section: Optional[str] = Field(default=None, description='Название категории')
     tag: List[str] = Field(default_factory=list, description='Теги, связанные с этой статьей')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class Book(BaseModel):
@@ -53,6 +55,7 @@ class Book(BaseModel):
     isbn: Optional[str] = Field(default=None, description='Международный стандартный книжный номер ISBN')
     release_date: Optional[datetime] = Field(default=None, description='Дата выпуска книги')
     tag: List[str] = Field(default_factory=list, description='Теги, связанные с этой книгой')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class Website(BaseModel):
@@ -68,6 +71,7 @@ class MusicSong(BaseModel):
     album_disc: Optional[int] = Field(default=None, description='Номер альбома на диске')
     album_track: Optional[int] = Field(default=None, description='Номер трека в альбоме')
     musician: List[Profile] = Field(default_factory=list, description='Исполнитель песни')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class MusicAlbum(BaseModel):
@@ -76,18 +80,20 @@ class MusicAlbum(BaseModel):
     song_track: Optional[int] = Field(default=None, description='Номер трека в альбоме в обратном значении')
     musician: Optional[Profile] = Field(default=None, description='Профайл музыканта, который создал эту песню')
     release_date: Optional[datetime] = Field(default=None, description='Датa выпуска альбома')
-
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class MusicPlayList(BaseModel):
     song: Optional['MusicSong'] = Field(default=None, description='Название песни в альбоме')
-    album_disc: Optional[int] = Field(default=None, description='Номер альбома на диске')
-    album_track: Optional[int] = Field(default=None, description='Номер трека в альбоме')
+    song_disc: Optional[int] = Field(default=None, description='Номер альбома на диске в обратном значении')
+    song_track: Optional[int] = Field(default=None, description='Номер трека в альбоме в обратном значении')
     creator: Optional[Profile] = Field(default=None, description='Создатель плейлиста')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class MusicRadioStation(BaseModel):
     creator: Optional[Profile] = Field(default=None, description='')
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 # URI: https://ogp.me/ns/video#
@@ -100,7 +106,7 @@ class VideoMovie(BaseModel):
     duration: Optional[int] = Field(default=None, description='Длина фильма в секундах')
     release_date: Optional[datetime] = Field(default=None, description='Дата выхода фильма в прокат')
     tag: List[str] = Field(default_factory=list, description='Теги, связанные с этим фильмом')
-
+    url: Optional[str] = Field(default=None, description='Url')
 
 
 class VideoTvShow(VideoMovie):
@@ -122,6 +128,7 @@ class OpenGraphImage(BaseModel):
     width: Optional[int] = Field(default=None, description='Число пикселей в ширину')
     height: Optional[int] = Field(default=None, description='Число пикселей в высоту')
     alt: Optional[str] = Field(default=None, description='')
+
 
 class OpenGraphVideo(BaseModel):
     url: Optional[str] = Field(default=None, description='Идентичный og:image')
@@ -153,15 +160,15 @@ class OpenGraph(BaseModel):
     locale_alternate: List[str] = Field(default_factory=list, description='')
     site_name: Optional[str] = Field(default=None, description='')
 
-    music_song: MusicSong = Field(default_factory=MusicSong, description='')
-    music_album: MusicAlbum = Field(default_factory=MusicAlbum, description='')
-    music_play_list: MusicPlayList = Field(default_factory=MusicPlayList, description='')
-    music_radio_station: MusicRadioStation = Field(default_factory=MusicRadioStation, description='')
+    music_song: List[MusicSong] = Field(default_factory=list, description='')
+    music_album: List[MusicAlbum] = Field(default_factory=list, description='')
+    music_play_list: List[MusicPlayList] = Field(default_factory=list, description='')
+    music_radio_station: List[MusicRadioStation] = Field(default_factory=list, description='')
 
-    video_movie: VideoMovie = Field(default_factory=VideoMovie, description='')
-    video_tv_show: VideoTvShow = Field(default_factory=VideoTvShow, description='')
-    video_episode: VideoEpisode = Field(default_factory=VideoEpisode, description='')
-    video_other: VideoOther = Field(default_factory=VideoOther, description='')
+    video_movie: List[VideoMovie] = Field(default_factory=list, description='')
+    video_tv_show: List[VideoTvShow] = Field(default_factory=list, description='')
+    video_episode: List[VideoEpisode] = Field(default_factory=list, description='')
+    video_other: List[VideoOther] = Field(default_factory=list, description='')
 
     profile: Profile = Field(default_factory=Profile, description='')
     article: Article = Field(default_factory=Article, description='')

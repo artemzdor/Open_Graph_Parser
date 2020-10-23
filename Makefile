@@ -21,10 +21,10 @@ help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo ""
 	@echo "  build              to make all docker assembly images"
-	@echo "  test               run all tests"
+	@echo "  up                 run server"
+	@echo "  stop               stop server"
 	@echo "  cli                to run a console"
-	@echo "  pip-compile        to make pip-compile"
-	@echo "  test_server       test grpc server"
+	@echo "  pylint             run pylint"
 	@echo ""
 	@echo "See contents of Makefile for more targets."
 
@@ -33,8 +33,6 @@ stop:
 
 up: stop
 	$(DC_CMD) up
-
-restart: stop start
 
 cli:
 	$(DC_CMD) run --rm $(SERVICE) sh
@@ -45,8 +43,8 @@ build:
 pip-compile:
 	$(DC_CMD) run --rm --no-deps $(SERVICE) pip-compile
 
-test:
-	$(DC_CMD) run --rm $(TEST_SERVICE) python -m pytest
+pylint:
+	pylint ./src
 
-test_server:
-	$(DC_CMD) run --rm $(TEST_SERVER_SERVICE) python -m pytest
+#test_server:
+#	$(DC_CMD) run --rm $(TEST_SERVER_SERVICE) python -m pytest

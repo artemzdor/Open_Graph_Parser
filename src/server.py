@@ -1,4 +1,4 @@
-from typing import Optional, List, Callable
+from typing import Optional, List
 
 import uvicorn
 from pydantic import AnyHttpUrl
@@ -14,7 +14,6 @@ router_cm: APIRouter = APIRouter()
 
 
 async def get_fabric(backend: Optional[str] = Query(default='default', description='backend парсера')) -> BaseFabric:
-    """ Fabric object """
     fabric: BaseFabric = await create_fabric(backend=backend)
     return fabric
 
@@ -30,15 +29,8 @@ async def get_og(
         fabric: BaseFabric = Depends(get_fabric, use_cache=True)
 ):
     content_site: str = await fabric.parser.get_context_url(url=str(url))
-    tags: List[TagOR] = fabric.parser.get_list_tags(content_site=content_site)
-    open_graph: OpenGraph = OpenGraph()
-
-    for tag in tags:
-        fun: Optional[Callable[[TagOR, OpenGraph], bool]] = fabric.parser.map_node_og.get(tag.property_name)
-        if fun is None:
-            continue
-        fun(tag, open_graph)
-
+    tags: List[TagOR] = fabric.parser.get_tags(content_site=content_site)
+    open_graph: OpenGraph = fabric.parser.get_open_graph(tags=tags)
     return open_graph
 
 

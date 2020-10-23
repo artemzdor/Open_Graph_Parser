@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List, Dict, Callable
-
+import logging
 
 from src.apps.models.parsers.tags import TagOR
 from src.apps.models.open_graph import OpenGraph
 from src.apps.fabric.parser.parser_methods import *
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseParser(ABC):
@@ -72,5 +75,16 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def get_list_tags(self, content_site: str) -> Optional[List[TagOR]]:
+    def get_tags(self, content_site: str) -> Optional[List[TagOR]]:
         pass
+
+    def get_open_graph(self, tags: List[TagOR]) -> OpenGraph:
+        open_graph: OpenGraph = OpenGraph()
+        for tag in tags:
+            fun: Optional[Callable[[TagOR, OpenGraph], bool]] = self.map_node_og.get(tag.property_name)
+            if fun is None:
+                continue
+            result: bool = fun(tag, open_graph)
+            if not result:
+                logger.error(msg=f"Error parse tag: {tag}")
+        return open_graph
